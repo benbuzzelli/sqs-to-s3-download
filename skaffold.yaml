@@ -1,0 +1,11 @@
+apiVersion: skaffold/v2beta5
+kind: Config
+metadata:
+  name: gfo-processing
+build:
+  artifacts:
+  - image: nexus-docker-public-hosted.ossim.io/gfo-processing
+deploy:
+  kubectl:
+    manifests:
+    - k8s.yml
