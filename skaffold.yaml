@@ -5,6 +5,10 @@ metadata:
 build:
   artifacts:
   - image: nexus-docker-public-hosted.ossim.io/gfo-processing
+    jib: {}
+  tagPolicy:
+    gitCommit: {}
+
 deploy:
   kubectl:
     manifests:

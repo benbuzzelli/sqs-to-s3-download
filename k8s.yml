@@ -53,12 +53,13 @@ data:
   application.yaml: |-
     app:
       sqs:
-        gfoQueue: GfoQueue
+        queue: gegd-tpc
       s3:
         bucket:
-          to: chris-test-to
-          from: chris-test-from
-        directory:
-          GFOTempZip: gfo-zip
-          blackTempZip: blacksky-zip
-          skyTempZip: skysat-zip
+          SkySatTo: nga-skysat-data-test
+          SkySatFrom: nga-non-diode-o1
+          BlackSkyTo: nga-blacksky-data-test
+          BlackSkyFrom: kno-gv-o1
+
+        processed:
+          dir: ingest
