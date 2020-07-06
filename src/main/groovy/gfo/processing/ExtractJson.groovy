@@ -79,9 +79,9 @@ class ExtractJson extends RouteBuilder
                         println "SQS message received.\nCopying from S3 bucket: ${s3BucketBlackSkyFrom}/${data.objectKey} " +
                                 "\nto S3 bucket: ${s3BucketBlackSkyTo}/${processedDirectoryName}/${objectKeyName}"
 
-                        ProcessBuilder pb = new ProcessBuilder( )
-                        String[] command = "aws s3 sync s3://kno-gv-o1/16928865/SXO00000/Imagery/products/bsg/BSG-101-20200615-030558-1570502-nitf-non-ortho.zip ./BSG"
-                        Process p = Runtime.getRuntime().exec(command);
+//                        ProcessBuilder pb = new ProcessBuilder( )
+//                        String[] command = "aws s3 sync s3://kno-gv-o1/16928865/SXO00000/Imagery/products/bsg/BSG-101-20200615-030558-1570502-nitf-non-ortho.zip ./BSG"
+//                        Process p = Runtime.getRuntime().exec(command);
 
 //                    }else if((data.bucketName).toString().contentEquals("nga-skysat-data-test")) {
 //
