@@ -14,6 +14,7 @@ spec:
       containers:
         - name: "gfo-processing"
           image: "nexus-docker-public-hosted.ossim.io/gfo-processing"
+#          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8080
@@ -30,6 +31,18 @@ spec:
             initialDelaySeconds: 5
             timeoutSeconds: 3
             failureThreshold: 10
+          volumeMounts:
+            - mountPath: /maxar-blacksky-data
+              name: blacksky-data
+#            - mountPath: /maxar-skysat-data
+#              name: skysat-data
+      volumes:
+        - name: blacksky-data
+          persistentVolumeClaim:
+            claimName: gegd-processing-blacksky-data-pvc
+#        - name: skysat-data
+#          persistentVolumeClaim:
+#            claimName: camel-caravan-skysat
 ---
 apiVersion: v1
 kind: Service
@@ -38,7 +51,7 @@ metadata:
 spec:
   selector:
     app: "gfo-processing"
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - protocol: "TCP"
       port: 8080
@@ -53,13 +66,10 @@ data:
   application.yaml: |-
     app:
       sqs:
-        queue: gegd-tpc
-      s3:
-        bucket:
-          SkySatTo: nga-skysat-data-test
-          SkySatFrom: nga-non-diode-o1
-          BlackSkyTo: nga-blacksky-data-test
-          BlackSkyFrom: kno-gv-o1
-
-        processed:
-          dir: ingest
+        queue: 3pa-test
+#      s3:
+#        bucket:
+#          to: camel-copy-test2
+#          from: kno-gv-o1
+#        processed:
+#          dir: from-camel
