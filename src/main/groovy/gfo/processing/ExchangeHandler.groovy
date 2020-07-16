@@ -25,9 +25,5 @@ class ExchangeHandler {
         if (body != '')
             exchange.getOut().setBody(body)
     }
-    public static String getErrorLogKey(key) {
-        Date date = new Date()
-        String fileDate = date.format("yyyy-MM-dd")
-        return "${logRootDirectory}/${errorLogDirectory}/${fileDate}/${key}"
-    }
 }
+
