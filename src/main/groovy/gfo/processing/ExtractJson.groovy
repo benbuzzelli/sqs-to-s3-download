@@ -1,11 +1,11 @@
 package gfo.processing
 
-import com.amazonaws.services.s3.AmazonS3ClientBuilder
-import groovy.json.JsonSlurper
-import io.micronaut.context.annotation.Value
 import javax.inject.Singleton
 import org.apache.camel.builder.RouteBuilder
+import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder
+import io.micronaut.context.annotation.Value
+import groovy.json.JsonSlurper
 
 @Singleton
 class ExtractJson extends RouteBuilder
