@@ -1,11 +1,9 @@
 plugins {
-    id "com.google.cloud.tools.jib" version "2.3.0"
+    id "com.google.cloud.tools.jib" version "2.4.0"
     id "groovy"
     id "com.github.johnrengelman.shadow" version "5.2.0"
     id "application"
 }
-
-
 
 version "0.1"
 group "gfo.processing"
@@ -27,6 +25,10 @@ dependencies {
     compile group: 'org.apache.camel', name: 'camel-jackson', version: '3.3.0'
     compile group: 'org.apache.camel', name: 'camel-http', version: '3.3.0'
     compile group: 'org.apache.camel', name: 'camel-zipfile', version: '3.3.0'
+    compile group: 'org.apache.camel', name: 'camel-file', version: '3.3.0'
+
+    compile group: 'org.codehaus.groovy', name: 'groovy-ant', version: '2.5.8'
+
     compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.5.8'
     compile group: 'org.codehaus.groovy', name: 'groovy-dateutil', version: '2.5.8'
     annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
