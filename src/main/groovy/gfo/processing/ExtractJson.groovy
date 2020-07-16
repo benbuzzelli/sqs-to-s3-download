@@ -80,13 +80,13 @@ class ExtractJson extends RouteBuilder
                     if (satName == "blacksky" && objectKeyName.contains("nitf-non-ortho")) {
                         println "It is a Blacksky image. The filename contains the phrase 'nitf-non-ortho'. We should download it! 👍"
                         println "-"*100
-                        downloadSatImage(data?.bucketName, data?.objectKey, objectKeyName, satName)
+                        //downloadSatImage(data?.bucketName, data?.objectKey, objectKeyName, satName)
                     }
                     // Check to see if it is sksat and a 'SkySatScene'.
                     else if (satName == "skysat" && objectKeyName.contains("SkySatScene")){
                         println "It is a Skysat image. The filename contains the phrase 'SkySatScene'. We should download it! 👍"
                         println "-"*100
-                        downloadSatImage(data?.bucketName, data?.objectKey, objectKeyName, satName)
+                        //downloadSatImage(data?.bucketName, data?.objectKey, objectKeyName, satName)
                     } else {
                         println "Nope, it doesn't fit our criteria. We shouldn't download it! 🚫"
                         println "-"*100
