@@ -32,17 +32,17 @@ spec:
             timeoutSeconds: 3
             failureThreshold: 10
           volumeMounts:
-            - mountPath: /maxar-blacksky-data
+            - mountPath: /3pa-blacksky-data
               name: blacksky-data
-#            - mountPath: /maxar-skysat-data
-#              name: skysat-data
+            - mountPath: /3pa-skysat-data
+              name: skysat-data
       volumes:
         - name: blacksky-data
           persistentVolumeClaim:
-            claimName: gegd-processing-blacksky-data-pvc
-#        - name: skysat-data
-#          persistentVolumeClaim:
-#            claimName: camel-caravan-skysat
+            claimName: gfo-processing-blacksky-data-pvc
+        - name: skysat-data
+          persistentVolumeClaim:
+            claimName: gfo-processing-skysat-data-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -66,10 +66,4 @@ data:
   application.yaml: |-
     app:
       sqs:
-        queue: 3pa-test
-#      s3:
-#        bucket:
-#          to: camel-copy-test2
-#          from: kno-gv-o1
-#        processed:
-#          dir: from-camel
+        queue: aws-sqs://arn:aws:sqs:us-east-1:576113035271:gegd-tpc-test

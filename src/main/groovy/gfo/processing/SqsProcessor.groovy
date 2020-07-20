@@ -1,5 +1,10 @@
 package gfo.processing
 
+import com.amazonaws.AmazonServiceException
+import com.amazonaws.SdkClientException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 import javax.inject.Singleton
 import org.apache.camel.builder.RouteBuilder
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
@@ -8,23 +13,27 @@ import io.micronaut.context.annotation.Value
 import groovy.json.JsonSlurper
 
 @Singleton
-class ExtractJson extends RouteBuilder
+class SqsProcessor extends RouteBuilder
 {
-    // @Value('${app.sqs.queue:"LidarData"}')
+    Logger logger = LoggerFactory.getLogger(SqsProcessor.class);
+
     @Value('${app.sqs.queue}')
     String sqsQueueName
+
+    Integer counter = 0
+    String msgEventNameCheck = "ObjectCreated:CompleteMultipartUpload"
+    String msgFileExtensionCheck = "zip"
 
     @Override
     void configure() throws Exception
     {
-        Integer counter = 0
 
         Map<String, String> data
 
         bindToRegistry('client', AmazonSQSClientBuilder.defaultClient())
         bindToRegistry('s3client', AmazonS3ClientBuilder.defaultClient())
 
-        from("aws-sqs://${sqsQueueName}?amazonSQSClient=#client&delay=500&maxMessagesPerPoll=10&deleteAfterRead=true")
+        from("${sqsQueueName}?amazonSQSClient=#client&delay=500&maxMessagesPerPoll=10&deleteAfterRead=true")
             .unmarshal().json()
             .process { exchange ->
 
@@ -34,7 +43,8 @@ class ExtractJson extends RouteBuilder
                 // monitoring the SQS queue
                 if (jsonSqsMsg.Records[0].eventVersion == "2.1") {
                     counter++
-                    println "Images processed ${counter}"
+                    logger.info("-"*50)
+                    logger.info("Files examined ${counter}")
                 }
 
                 data = [
@@ -49,11 +59,11 @@ class ExtractJson extends RouteBuilder
 
                 // Gets the file extension type (zip, tif, png, txt, etc)
                 List<String> fileItems = objectKeyName.split("\\.")
-                String fileType = fileItems.last()
+                String fileExtension = fileItems.last()
 
                 String satName
 
-                // TODO: Can we make this less hard coded?
+                // TODO: Remove old nga bucket name: kno-gv-o1
                 switch(data.bucketName) {
                     case "kno-gv-o1":
                         satName = "blacksky"
@@ -69,29 +79,28 @@ class ExtractJson extends RouteBuilder
                         break
                 }
 
+                logger.info( "Processing ${objectKeyName} from bucket: ${data.bucketName}")
+
                 // If it the eventName attribute is ObjectCreated:CompleteMultipartUpload then the file has been completely uploaded
                 // and is available for download.  In addition, if the file type is a .zip then begin processing it.
-                // TODO: eventName and fileType check should be configurable --> static final const at top
-                if (data.eventName == "ObjectCreated:CompleteMultipartUpload" && fileType == "zip") {
-                    println "-"*100
-                    println "Checking to see if we should download ${objectKeyName}..."
+                if (data.eventName == msgEventNameCheck && fileExtension == msgFileExtensionCheck) {
 
                     // Check to see if it is blacksky and a 'nitf-non-ortho' file.
                     if (satName == "blacksky" && objectKeyName.contains("nitf-non-ortho")) {
-                        println "It is a Blacksky image. The filename contains the phrase 'nitf-non-ortho'. We should download it! 👍"
-                        println "-"*100
-                        //downloadSatImage(data?.bucketName, data?.objectKey, objectKeyName, satName)
-                    }
-                    // Check to see if it is sksat and a 'SkySatScene'.
-                    else if (satName == "skysat" && objectKeyName.contains("SkySatScene")){
-                        println "It is a Skysat image. The filename contains the phrase 'SkySatScene'. We should download it! 👍"
-                        println "-"*100
-                        //downloadSatImage(data?.bucketName, data?.objectKey, objectKeyName, satName)
-                    } else {
-                        println "Nope, it doesn't fit our criteria. We shouldn't download it! 🚫"
-                        println "-"*100
-                    }
+                        logger.info( "👍 It is a Blacksky image, and the filename contains the phrase 'nitf-non-ortho'. We should download it! ")
+                        downloadSatImage(data?.bucketName, data?.objectKey, objectKeyName, satName)
 
+                    }
+                    // Check to see if it is skysat and a 'SkySatScene'.
+                    else if (satName == "skysat" && objectKeyName.contains("SkySatScene")){
+                        logger.info("👍 It is a Skysat image, and the filename contains the phrase 'SkySatScene'. We should download it!")
+                        downloadSatImage(data?.bucketName, data?.objectKey, objectKeyName, satName)
+
+                    } else {
+                        logger.info("🚫 Nope, it doesn't fit our criteria (nitf-non-ortho or SkysatScene). We shouldn't download it!")
+                    }
+                } else {
+                    logger.info("🚫 Nope, it doesn't fit our criteria (zip and MPU). Event Name:${data.eventName}, File Extension:${fileExtension}  We shouldn't download it!")
                 }
 
             }
@@ -101,21 +110,15 @@ class ExtractJson extends RouteBuilder
 
     void downloadSatImage (String bucketName, String objectKey, String objectKeyName, String satName) {
 
-        println "#"*40
-        println "SQS message received. Copying from S3 bucket: ${bucketName}/${objectKey} " +
-                "to file: /maxar-${satName}-data/ingest/${objectKeyName}"
-        println "#"*40
+        logger.info( "Attempting download of: ${bucketName}/${objectKey}")
 
-        // TODO: Find a way to do a check to see if the file exists on the bucket.
-        // Otherwise you will get an error:
-        // Jul 15, 2020 8:36:57 PM com.amazonaws.services.s3.internal.S3AbortableInputStream close
-        // WARNING: Not all bytes were read from the S3ObjectInputStream, aborting HTTP connection.
-        // This is likely an error and may result in sub-optimal behavior.
-        // Request only the bytes you need via a ranged GET or drain the input stream after use.
-        File filePath = new File("/maxar-${satName}-data/ingest/${objectKeyName}.temp")
-        //File filePath = new File("/tmp/${objectKeyName}.temp")
+        // TODO: Make this configurable
+        File downloadPath = new File("/3pa-${satName}-data/ingest/")
+        File file = new File("${downloadPath}/${objectKeyName}.temp")
 
-        if (!filePath.exists()) {
+        logger.info("Creating file: ${file}")
+
+        if (!file.exists()) {
 
             InputStream inputStream = null
             try {
@@ -123,21 +126,39 @@ class ExtractJson extends RouteBuilder
                 def s3client = getContext().getRegistry().lookupByName("s3client")
                 inputStream = s3client.getObject(bucketName, objectKey).getObjectContent()
 
-                filePath.withOutputStream {out ->
+                file.withOutputStream {out ->
                     out << inputStream
                 }
-                println filePath.renameTo("/maxar-${satName}-data/ingest/${objectKeyName}")
-                //println filePath.renameTo("/tmp/${objectKeyName}")
 
-            } finally {
-                inputStream?.close()
+                file.renameTo("/3pa-${satName}-data/ingest/${objectKeyName}")
+                logger.info("Renamed file: ${file}.")
+                logger.info("✅  File downloaded successfully.")
 
-                println "-"*40
-                println "The file has been fully downloaded"
-                println "-"*40
 
             }
-    }
+            catch (Exception e) {
+                logger.error("${e.message}")
+                logger.error("❗ Unable to download file")
+
+            }
+             catch (AmazonServiceException e) {
+                // The call was transmitted successfully, but Amazon S3 couldn't process
+                // it, so it returned an error response.
+                 logger.error("${e.message}")
+
+            } catch (SdkClientException e) {
+                // Amazon S3 couldn't be contacted for a response, or the client
+                // couldn't parse the response from Amazon S3.
+                logger.error("${e.message}")
+
+            }
+            finally {
+                inputStream?.close()
+
+            }
+    } else {
+            logger.info("⚠️ File already exists on disk. Skipping.")
+        }
 
 }
 
