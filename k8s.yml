@@ -31,18 +31,18 @@ spec:
             initialDelaySeconds: 5
             timeoutSeconds: 3
             failureThreshold: 10
-#          volumeMounts:
-#            - mountPath: /3pa-blacksky-data
-#              name: blacksky-data
-#            - mountPath: /3pa-skysat-data
-#              name: skysat-data
-#      volumes:
-#        - name: blacksky-data
-#          persistentVolumeClaim:
-#            claimName: gfo-processing-blacksky-data-pvc
-#        - name: skysat-data
-#          persistentVolumeClaim:
-#            claimName: gfo-processing-skysat-data-pvc
+          volumeMounts:
+            - mountPath: /3pa-blacksky-data
+              name: blacksky-data
+            - mountPath: /3pa-skysat-data
+              name: skysat-data
+      volumes:
+        - name: blacksky-data
+          persistentVolumeClaim:
+            claimName: gfo-processing-blacksky-data-pvc
+        - name: skysat-data
+          persistentVolumeClaim:
+            claimName: gfo-processing-skysat-data-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -66,5 +66,5 @@ data:
   application.yaml: |-
     app:
       sqs:
-        #queue: aws-sqs://arn:aws:sqs:us-east-1:576113035271:gegd-tpc-test
-        queue: aws-sqs://arn:aws:sqs:us-east-1:320588532383:3pa-test
+        queue: aws-sqs://arn:aws:sqs:us-east-1:576113035271:gegd-tpc-test
+        #queue: aws-sqs://arn:aws:sqs:us-east-1:320588532383:3pa-test
