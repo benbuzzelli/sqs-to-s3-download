@@ -66,5 +66,6 @@ data:
   application.yaml: |-
     app:
       sqs:
-        queue: aws-sqs://arn:aws:sqs:us-east-1:576113035271:gegd-tpc-test
-        #queue: aws-sqs://arn:aws:sqs:us-east-1:320588532383:3pa-test
+        queue: arn:aws:sqs:us-east-1:576113035271:gegd-tpc-test
+        #queue: arn:aws:sqs:us-east-1:320588532383:3pa-test
+        #queue: gegd-tpc-test

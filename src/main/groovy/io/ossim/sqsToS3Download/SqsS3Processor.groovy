@@ -16,14 +16,11 @@ import groovy.json.JsonSlurper
 @Singleton
 class SqsS3Processor extends RouteBuilder
 {
-    Logger logger
-    Logger loggerBlacksky = LoggerFactory.getLogger("logFileBlacksky")
-    Logger loggerSkysat = LoggerFactory.getLogger("logFileBlacksky")
+    Logger logger = LoggerFactory.getLogger("logFile")
 
     @Value('${app.sqs.queue}')
     String sqsQueueName
 
-//    Integer counter = 0
     String msgEventNameCheck = "ObjectCreated:CompleteMultipartUpload"
     String msgFileExtensionCheck = "zip"
 
@@ -36,19 +33,13 @@ class SqsS3Processor extends RouteBuilder
         bindToRegistry('client', AmazonSQSClientBuilder.defaultClient())
         bindToRegistry('s3client', AmazonS3ClientBuilder.defaultClient())
 
-        from("${sqsQueueName}?amazonSQSClient=#client&delay=500&maxMessagesPerPoll=10&deleteAfterRead=true")
+        from("aws-sqs://${sqsQueueName}?amazonSQSClient=#client&delay=500&maxMessagesPerPoll=10&deleteAfterRead=true")
             .unmarshal().json()
             .process { exchange ->
 
-                def jsonSqsMsg = new JsonSlurper().parseText(exchange.in.body.Message)
+                logger.info("-"*75)
 
-//                // TODO: This is just here to count how many images we have looked at while
-//                // monitoring the SQS queue
-//                if (jsonSqsMsg.Records[0].eventVersion == "2.1") {
-//                    counter++
-//                    logger.info("-"*50)
-//                    logger.info("Files examined ${counter}")
-//                }
+                def jsonSqsMsg = new JsonSlurper().parseText(exchange.in.body.Message)
 
                 data = [
                     eventName: jsonSqsMsg.Records[0].eventName,
@@ -80,12 +71,6 @@ class SqsS3Processor extends RouteBuilder
                     default:
                         return
                         break
-                }
-
-                if (satName == "blacksky") {
-                    logger = loggerBlacksky
-                } else {
-                    logger = loggerSkysat
                 }
 
                 logger.info( "Processing ${objectKeyName} from bucket: ${data.bucketName}")
@@ -122,7 +107,7 @@ class SqsS3Processor extends RouteBuilder
         logger.info( "Attempting download of: ${bucketName}/${objectKey}")
 
         // TODO: Make this configurable
-        File downloadPath = new File("/3pa-${satName}-data/test/")
+        File downloadPath = new File("/3pa-${satName}-data/ingest/")
         File file = new File("${downloadPath}/${objectKeyName}.temp")
 
         logger.info("Creating file: ${file}")
@@ -139,8 +124,8 @@ class SqsS3Processor extends RouteBuilder
                     out << inputStream
                 }
 
-                file.renameTo("/3pa-${satName}-data/test/${objectKeyName}")
-                logger.info("Renamed file: /3pa-${satName}-data/test/${objectKeyName}")
+                file.renameTo("/3pa-${satName}-data/ingest/${objectKeyName}")
+                logger.info("Renamed file: /3pa-${satName}-data/ingest/${objectKeyName}")
                 logger.info("✅  File downloaded successfully.")
 
 

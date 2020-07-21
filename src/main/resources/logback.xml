@@ -8,9 +8,9 @@
         </encoder>
     </appender>
 
-    <appender name="logFileBlacksky" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="logFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/3pa-blacksky-data/logs/download-log-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/3pa-blacksky-data/logs/sqs-to-s3-download-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
@@ -23,24 +23,8 @@
         </encoder>
     </appender>
 
-    <appender name="logFileSkysat" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/3pa-skysat-data/logs/download-log-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
-            <totalSizeCap>3GB</totalSizeCap>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>30MB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-            <!--            <pattern>[%thread] %-5level %logger{36} - %msg%n</pattern>-->
-            <pattern>%cyan(%d{HH:mm:ss.SSS}) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
-        </encoder>
-    </appender>
-
     <root level="info">
         <appender-ref ref="STDOUT" />
-        <appender-ref ref="logFileBlacksky" />
-        <appender-ref ref="logFileSkysat" />
+        <appender-ref ref="logFile" />
     </root>
 </configuration>
