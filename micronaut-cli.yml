@@ -1,5 +1,5 @@
 profile: service
-defaultPackage: gfo.processing
+defaultPackage: io.ossim.sqs-to-s3-download
 ---
 testFramework: spock
 sourceLanguage: groovy

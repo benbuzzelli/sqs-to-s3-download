@@ -1,4 +1,4 @@
-package gfo.processing
+package io.ossim.sqsToS3Download
 
 import io.micronaut.runtime.Micronaut
 import io.micronaut.runtime.event.annotation.EventListener

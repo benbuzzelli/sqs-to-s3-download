@@ -1,10 +1,10 @@
 apiVersion: skaffold/v2beta4
 kind: Config
 metadata:
-  name: gfo-processing
+  name: sqs-to-s3-download
 build:
   artifacts:
-  - image: nexus-docker-public-hosted.ossim.io/gfo-processing
+  - image: nexus-docker-public-hosted.ossim.io/sqs-to-s3-download
     jib: {}
   tagPolicy:
     gitCommit: {}
