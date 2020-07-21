@@ -10,11 +10,11 @@ import org.apache.camel.support.SimpleRegistry
 
 class Application {
 
-    SqsProcessor sqsProcessor
+    SqsS3Processor sqsS3Processor
 
-    Application(SqsProcessor sqsProcessor)
+    Application(SqsS3Processor sqsS3Processor)
     {
-        this.sqsProcessor = sqsProcessor
+        this.sqsS3Processor = sqsS3Processor
     }
 
     @EventListener
@@ -23,7 +23,7 @@ class Application {
         SimpleRegistry registry = new SimpleRegistry()
         CamelContext context = new DefaultCamelContext(registry)
 
-        context.addRoutes(sqsProcessor)
+        context.addRoutes(sqsS3Processor)
         context.start();
     }
 

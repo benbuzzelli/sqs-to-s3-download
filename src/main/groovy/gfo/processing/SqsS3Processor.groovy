@@ -13,7 +13,7 @@ import io.micronaut.context.annotation.Value
 import groovy.json.JsonSlurper
 
 @Singleton
-class SqsProcessor extends RouteBuilder
+class SqsS3Processor extends RouteBuilder
 {
     Logger logger
     Logger loggerBlacksky = LoggerFactory.getLogger("logFileBlacksky")
