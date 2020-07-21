@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "gfo-processing"
+  name: "sqs-to-s3-download"
 spec:
   selector:
     matchLabels:
-      app: "gfo-processing"
+      app: "sqs-to-s3-download"
   template:
     metadata:
       labels:
-        app: "gfo-processing"
+        app: "sqs-to-s3-download"
     spec:
       containers:
-        - name: "gfo-processing"
-          image: "nexus-docker-public-hosted.ossim.io/gfo-processing"
-#          imagePullPolicy: Always
+        - name: "sqs-to-s3-download"
+          image: "nexus-docker-public-hosted.ossim.io/sqs-to-s3-download"
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8080
@@ -47,10 +47,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: "gfo-processing"
+  name: "sqs-to-s3-download"
 spec:
   selector:
-    app: "gfo-processing"
+    app: "sqs-to-s3-download"
   type: ClusterIP
   ports:
     - protocol: "TCP"
@@ -59,9 +59,9 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: gfo-processing
+  name: sqs-to-s3-download
   labels:
-    app: gfo-processing
+    app: sqs-to-s3-download
 data:
   application.yaml: |-
     app:

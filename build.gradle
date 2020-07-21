@@ -6,7 +6,7 @@ plugins {
 }
 
 version "0.1"
-group "gfo.processing"
+group "io.ossim.sqsToS3Download"
 
 repositories {
     mavenCentral()
@@ -52,13 +52,13 @@ dependencies {
     testImplementation "io.micronaut.test:micronaut-test-junit5"
 }
 test.classpath += configurations.developmentOnly
-mainClassName = "gfo.processing.Application"
+mainClassName = "io.ossim.sqsToS3Download.Application"
 jib {
     from {
         image = "adoptopenjdk/openjdk13-openj9:jdk-13.0.2_8_openj9-0.18.0-alpine-slim"
     }
     to {
-        image = 'nexus-docker-public-hosted.ossim.io/gfo-processing'
+        image = 'nexus-docker-public-hosted.ossim.io/sqs-to-s3-download'
     }
     extraDirectories {
         paths {

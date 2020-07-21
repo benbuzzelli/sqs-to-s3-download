@@ -1,4 +1,5 @@
-package gfo.processing
+package io.ossim.sqsToS3Download
+
 
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.SdkClientException

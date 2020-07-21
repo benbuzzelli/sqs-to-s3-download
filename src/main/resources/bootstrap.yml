@@ -1,6 +1,6 @@
 micronaut:
   application:
-    name: gfo-processing
+    name: sqs-to-s3-download
   config-client:
     enabled: true
 
@@ -15,4 +15,4 @@ kubernetes:
       enabled: true
       watch: true
       labels:
-        - app: gfo-processing
+        - app: sqs-to-s3-download
