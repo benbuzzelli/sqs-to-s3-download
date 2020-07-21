@@ -15,12 +15,14 @@ import groovy.json.JsonSlurper
 @Singleton
 class SqsProcessor extends RouteBuilder
 {
-    Logger logger = LoggerFactory.getLogger(SqsProcessor.class);
+    Logger logger
+    Logger loggerBlacksky = LoggerFactory.getLogger("logFileBlacksky")
+    Logger loggerSkysat = LoggerFactory.getLogger("logFileBlacksky")
 
     @Value('${app.sqs.queue}')
     String sqsQueueName
 
-    Integer counter = 0
+//    Integer counter = 0
     String msgEventNameCheck = "ObjectCreated:CompleteMultipartUpload"
     String msgFileExtensionCheck = "zip"
 
@@ -39,13 +41,13 @@ class SqsProcessor extends RouteBuilder
 
                 def jsonSqsMsg = new JsonSlurper().parseText(exchange.in.body.Message)
 
-                // TODO: This is just here to count how many images we have looked at while
-                // monitoring the SQS queue
-                if (jsonSqsMsg.Records[0].eventVersion == "2.1") {
-                    counter++
-                    logger.info("-"*50)
-                    logger.info("Files examined ${counter}")
-                }
+//                // TODO: This is just here to count how many images we have looked at while
+//                // monitoring the SQS queue
+//                if (jsonSqsMsg.Records[0].eventVersion == "2.1") {
+//                    counter++
+//                    logger.info("-"*50)
+//                    logger.info("Files examined ${counter}")
+//                }
 
                 data = [
                     eventName: jsonSqsMsg.Records[0].eventName,
@@ -79,6 +81,12 @@ class SqsProcessor extends RouteBuilder
                         break
                 }
 
+                if (satName == "blacksky") {
+                    logger = loggerBlacksky
+                } else {
+                    logger = loggerSkysat
+                }
+
                 logger.info( "Processing ${objectKeyName} from bucket: ${data.bucketName}")
 
                 // If it the eventName attribute is ObjectCreated:CompleteMultipartUpload then the file has been completely uploaded
@@ -87,20 +95,20 @@ class SqsProcessor extends RouteBuilder
 
                     // Check to see if it is blacksky and a 'nitf-non-ortho' file.
                     if (satName == "blacksky" && objectKeyName.contains("nitf-non-ortho")) {
-                        logger.info( "👍 It is a Blacksky image, and the filename contains the phrase 'nitf-non-ortho'. We should download it! ")
+                        logger.info( "👍  It is a Blacksky image, and the filename contains the phrase 'nitf-non-ortho'. We should download it! ")
                         downloadSatImage(data?.bucketName, data?.objectKey, objectKeyName, satName)
 
                     }
                     // Check to see if it is skysat and a 'SkySatScene'.
                     else if (satName == "skysat" && objectKeyName.contains("SkySatScene")){
-                        logger.info("👍 It is a Skysat image, and the filename contains the phrase 'SkySatScene'. We should download it!")
+                        logger.info("👍  It is a Skysat image, and the filename contains the phrase 'SkySatScene'. We should download it!")
                         downloadSatImage(data?.bucketName, data?.objectKey, objectKeyName, satName)
 
                     } else {
-                        logger.info("🚫 Nope, it doesn't fit our criteria (nitf-non-ortho or SkysatScene). We shouldn't download it!")
+                        logger.info("🚫  Nope, it doesn't fit our criteria (nitf-non-ortho or SkysatScene). We shouldn't download it!")
                     }
                 } else {
-                    logger.info("🚫 Nope, it doesn't fit our criteria (zip and MPU). Event Name:${data.eventName}, File Extension:${fileExtension}  We shouldn't download it!")
+                    logger.info("🚫  Nope, it doesn't fit our criteria (zip and MPU). Event Name:${data.eventName}, File Extension:${fileExtension}  We shouldn't download it!")
                 }
 
             }
@@ -113,7 +121,7 @@ class SqsProcessor extends RouteBuilder
         logger.info( "Attempting download of: ${bucketName}/${objectKey}")
 
         // TODO: Make this configurable
-        File downloadPath = new File("/3pa-${satName}-data/ingest/")
+        File downloadPath = new File("/3pa-${satName}-data/test/")
         File file = new File("${downloadPath}/${objectKeyName}.temp")
 
         logger.info("Creating file: ${file}")
@@ -130,8 +138,8 @@ class SqsProcessor extends RouteBuilder
                     out << inputStream
                 }
 
-                file.renameTo("/3pa-${satName}-data/ingest/${objectKeyName}")
-                logger.info("Renamed file: ${file}.")
+                file.renameTo("/3pa-${satName}-data/test/${objectKeyName}")
+                logger.info("Renamed file: /3pa-${satName}-data/test/${objectKeyName}")
                 logger.info("✅  File downloaded successfully.")
 
 
@@ -157,7 +165,7 @@ class SqsProcessor extends RouteBuilder
 
             }
     } else {
-            logger.info("⚠️ File already exists on disk. Skipping.")
+            logger.info("⚠️  File already exists on disk. Skipping.")
         }
 
 }
