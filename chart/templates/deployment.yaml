@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "sqs-to-s3-download"
+  name: {{ .Values.appName }}
 spec:
   selector:
     matchLabels:
-      app: "sqs-to-s3-download"
+      app: {{ .Values.appName }}
   template:
     metadata:
       labels:
-        app: "sqs-to-s3-download"
+        app: {{ .Values.appName }}
     spec:
       containers:
-        - name: "sqs-to-s3-download"
-          image: "nexus-docker-public-hosted.ossim.io/sqs-to-s3-download"
-          imagePullPolicy: Always
+        - name: {{ .Values.appName }}
+          image: "{{ .Values.global.dockerRepository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 8080
@@ -32,16 +32,14 @@ spec:
             timeoutSeconds: 3
             failureThreshold: 10
           volumeMounts:
-            - mountPath: /3pa-blacksky
-              name: blacksky-data
-            - mountPath: /3pa-skysat
-              name: skysat-data
+            - mountPath: {{ .Values.volumeMountPathBlackSky }}
+              name: {{ .Values.volumeNameBlacksky }}
+            - mountPath: {{ .Values.volumeMountPathSkysat }}
+              name: {{ .Values.volumeNameSkysat }}
       volumes:
-        - name: blacksky-data
+        - name: {{ .Values.volumeNameBlacksky }}
           persistentVolumeClaim:
-            claimName: sqs-to-s3-download-blacksky-data-pvc
-            #claimName: blacksky-data
-        - name: skysat-data
+            claimName: {{ .Values.pvcNameBlackSky }}
+        - name: {{ .Values.volumeNameSkysat }}
           persistentVolumeClaim:
-            claimName: sqs-to-s3-download-skysat-data-pvc
-            #claimName: skysat-data
+            claimName: {{ .Values.pvcNameSkysat }}

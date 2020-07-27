@@ -1,3 +1,27 @@
 # Default values for chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+replicas: 1
+
+appName: sqs-to-s3-download
+
+global:
+  dockerRepository: nexus-docker-public-hosted.ossim.io
+
+image:
+  name: sqs-to-s3-download
+  tag: latest
+  pullPolicy: Always
+
+
+volumeNameBlacksky: blacksky-data
+pvcNameBlackSky: blacksky-data
+volumeMountPathBlackSky: /3pa-blacksky
+
+volumeNameSkysat: skysat-data
+pvcNameSkysat: skysat-data
+volumeMountPathSkysat: /3pa-skysat
+
+
+sqsQueue: arn:aws:sqs:us-east-1:320588532383:3pa-test
