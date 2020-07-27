@@ -15,13 +15,17 @@ image:
   pullPolicy: Always
 
 
+nfs:
+  server: o2-nfs.private.ossim.io
+
+storage: 16G
+
+
 volumeNameBlacksky: blacksky-data
-pvcNameBlackSky: blacksky-data
-volumeMountPathBlackSky: /3pa-blacksky
+volumeMountPathBlackSky: /maxar-blacksky-data
 
 volumeNameSkysat: skysat-data
-pvcNameSkysat: skysat-data
-volumeMountPathSkysat: /3pa-skysat
+volumeMountPathSkysat: /maxar-skysat-data
 
 
 sqsQueue: arn:aws:sqs:us-east-1:320588532383:3pa-test

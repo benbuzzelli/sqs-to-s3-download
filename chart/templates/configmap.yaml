@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-sqs-to-s3-download
+  name: {{ .Values.appName }}
   labels:
-    app: sqs-to-s3-download
+    app: {{ .Values.appName }}
 data:
   application.yaml: |-
     app:

@@ -1,5 +1,6 @@
 # 3PA Prod env. override values
-pvcNameBlackSky: sqs-to-s3-download-blacksky-data-pvc
-pvcNameSkysat: sqs-to-s3-download-skysat-data-pvc
+
+volumeMountPathBlackSky: /3pa-blacksky
+volumeMountPathSkysat: /3pa-skysat
 
 sqsQueue: arn:aws:sqs:us-east-1:576113035271:gegd-tpc-test
