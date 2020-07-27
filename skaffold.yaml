@@ -7,7 +7,6 @@ build:
   - image: nexus-docker-public-hosted.ossim.io/sqs-to-s3-download
     jib: {}
   tagPolicy:
-#    gitCommit: {}
     sha256: {}
 
 deploy:
