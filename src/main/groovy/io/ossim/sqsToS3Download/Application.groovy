@@ -23,6 +23,10 @@ class Application {
         SimpleRegistry registry = new SimpleRegistry()
         CamelContext context = new DefaultCamelContext(registry)
 
+        println "-"*80
+        println "Starting the application..."
+        println "-"*80
+
         context.addRoutes(sqsS3Processor)
         context.start();
     }

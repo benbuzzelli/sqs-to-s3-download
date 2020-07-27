@@ -45,28 +45,3 @@ spec:
           persistentVolumeClaim:
             claimName: sqs-to-s3-download-skysat-data-pvc
             #claimName: skysat-data
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: "sqs-to-s3-download"
-spec:
-  selector:
-    app: "sqs-to-s3-download"
-  type: ClusterIP
-  ports:
-    - protocol: "TCP"
-      port: 8080
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: sqs-to-s3-download
-  labels:
-    app: sqs-to-s3-download
-data:
-  application.yaml: |-
-    app:
-      sqs:
-        queue: arn:aws:sqs:us-east-1:576113035271:gegd-tpc-test
-        #queue: arn:aws:sqs:us-east-1:320588532383:3pa-test
