@@ -10,17 +10,16 @@
 
     <appender name="logFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <file>/3pa-blacksky/logs/sqs-to-s3-download.log</file>
             <fileNamePattern>/3pa-blacksky/logs/sqs-to-s3-download-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
-            <totalSizeCap>3GB</totalSizeCap>
+            <totalSizeCap>2MB</totalSizeCap>
         </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>30MB</maxFileSize>
-        </triggeringPolicy>
+
         <encoder>
-<!--            <pattern>[%thread] %-5level %logger{36} - %msg%n</pattern>-->
-            <pattern>%cyan(%d{HH:mm:ss.SSS}) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
+            <pattern>%cyan(%d{yyyy-MM-dd HH:mm:ss, America/New_York}) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
         </encoder>
+
     </appender>
 
     <root level="info">

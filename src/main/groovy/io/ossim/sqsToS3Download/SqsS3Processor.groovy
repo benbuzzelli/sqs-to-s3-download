@@ -107,7 +107,7 @@ class SqsS3Processor extends RouteBuilder
         logger.info( "Attempting download of: ${bucketName}/${objectKey}")
 
         // TODO: Make this configurable
-        File downloadPath = new File("/3pa-${satName}/ingest/")
+        File downloadPath = new File("/3pa-${satName}/processing/")
         File file = new File("${downloadPath}/${objectKeyName}.temp")
 
         logger.info("Creating file: ${file}")
@@ -125,7 +125,7 @@ class SqsS3Processor extends RouteBuilder
                 }
 
                 file.renameTo("/3pa-${satName}/ingest/${objectKeyName}")
-                logger.info("Renamed file: /3pa-${satName}/ingest/${objectKeyName}")
+                logger.info("Renamed file to: /3pa-${satName}/ingest/${objectKeyName}")
                 logger.info("✅  File downloaded successfully.")
 
 
