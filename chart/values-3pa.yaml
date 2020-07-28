@@ -2,5 +2,3 @@
 
 volumeMountPathBlackSky: /3pa-blacksky
 volumeMountPathSkysat: /3pa-skysat
-
-sqsQueue: arn:aws:sqs:us-east-1:576113035271:gegd-tpc-test

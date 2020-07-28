@@ -9,7 +9,16 @@ build:
   tagPolicy:
     sha256: {}
 
+#deploy:
+#  kubectl:
+#    manifests:
+#    - k8s.yml
+
 deploy:
-  kubectl:
-    manifests:
-    - k8s.yml
+  helm:
+    releases:
+      - name: sqs-to-s3-download
+        chartPath: chart
+        setValueTemplates:
+          #image.tag: "{{.IMAGE_NAME}}"
+          sqsQueue: arn:aws:sqs:us-east-1:320588532383:3pa-test # this can be env. var.
