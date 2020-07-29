@@ -40,11 +40,9 @@ spec:
         - name: blacksky-data
           persistentVolumeClaim:
             claimName: sqs-to-s3-download-blacksky-data-pvc
-            #claimName: blacksky-data
         - name: skysat-data
           persistentVolumeClaim:
             claimName: sqs-to-s3-download-skysat-data-pvc
-            #claimName: skysat-data
 ---
 apiVersion: v1
 kind: Service
@@ -69,4 +67,3 @@ data:
     app:
       sqs:
         queue: arn:aws:sqs:us-east-1:576113035271:gegd-tpc
-        #queue: arn:aws:sqs:us-east-1:320588532383:3pa-test

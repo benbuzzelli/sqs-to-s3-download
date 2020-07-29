@@ -21,4 +21,4 @@ deploy:
         chartPath: chart
         setValueTemplates:
           #image.tag: "{{.IMAGE_NAME}}"
-          sqsQueue: arn:aws:sqs:us-east-1:320588532383:3pa-test # this can be env. var.
+          sqsQueue: arn:aws:sqs:us-east-1:320588532383:3pa-test # this needs to an env. var.
