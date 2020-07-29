@@ -20,5 +20,4 @@ deploy:
       - name: sqs-to-s3-download
         chartPath: chart
         setValueTemplates:
-          #image.tag: "{{.IMAGE_NAME}}"
-          sqsQueue: arn:aws:sqs:us-east-1:320588532383:3pa-test # this needs to an env. var.
+          sqsQueue: "{{.SQS_QUEUE}}" # env. var.

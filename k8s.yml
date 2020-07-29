@@ -66,4 +66,4 @@ data:
   application.yaml: |-
     app:
       sqs:
-        queue: arn:aws:sqs:us-east-1:576113035271:gegd-tpc
+        queue: arn:aws:sqs:us-east-1:<ACCOUNT_NUM>:<QUEUE_NAME>

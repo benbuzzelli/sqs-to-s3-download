@@ -27,7 +27,4 @@ volumeMountPathBlackSky: /maxar-blacksky-data
 volumeNameSkysat: skysat-data
 volumeMountPathSkysat: /maxar-skysat-data
 
-
-sqsQueue: arn:aws:sqs:us-east-1:320588532383:3pa-test
-#sqsQueue: arn:aws:sqs:us-east-1:576113035271:gegd-tpc
-#sqsQueue: arn:aws:sqs:us-east-1:12345678910:my-cool-test-queue
+sqsQueue: arn:aws:sqs:us-east-1:12345678910:my-cool-test-queue
